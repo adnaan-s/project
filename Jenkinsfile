@@ -36,12 +36,9 @@ pipeline {
 
         stage('deploy') {
             steps {
-                // Define your private key for SSH
-                    def key = credentials('0bfa3fd8-3b88-4863-b1d3-3e5d19bb6e05')
+                // Define your private key for SSHwithCredentials([file(credentialsId: '0bfa3fd8-3b88-4863-b1d3-3e5d19bb6e05', variable: 'key')]) {
+                        def key = sh(script: "cat \$key", returnStdout: true).trim()
 
-                    // Copy files to the remote server
-                    sh "scp -r -o StrictHostKeyChecking=no -i $key * ubuntu@18.60.83.32:/home/ubuntu/"
-                    
                     // SSH into the remote server, install Docker, and run the container
                     sh '''
                     ssh -o StrictHostKeyChecking=no -i $key ubuntu@18.60.83.32 << EOF
