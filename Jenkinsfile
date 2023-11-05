@@ -1,6 +1,6 @@
 pipeline {
     agent any
-    
+
     tools {
         nodejs 'nodejs'
     }
@@ -9,8 +9,10 @@ pipeline {
         stage('Checkout') {
             steps {
                 script {
-                    // Check out the code from the 'master' branch in GitHub
-                    git credentialsId: '72628c26-6313-4ef6-a908-9c9ddcd3e801', url: 'https://github.com/adnaan-s/project.git'
+                    // Check out the code from the 'main' branch in GitHub
+                    checkout([$class: 'GitSCM', 
+                        branches: [[name: 'main']], 
+                        userRemoteConfigs: [[url: 'https://github.com/adnaan-s/project.git']]
                     ])
                 }
             }
@@ -25,9 +27,10 @@ pipeline {
                     // Tag the image
                     sh 'docker tag demo2:latest adnaansidd/prod:lts'
                     
-                    // Push the image to the development Docker Hub repository
-                    sh 'docker login -u adnaansidd -p 26122001As@'
-                    sh 'docker push adnaansidd/prod:lts'
+                    // Login to Docker Hub using credentials
+                    withCredentials([usernamePassword(credentialsId: 'docker-H', usernameVariable: 'adnaansidd', passwordVariable: '26122001As@')]) {
+                        sh 'docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD'
+                        sh 'docker push adnaansidd/prod:lts'
                     }
                 }
             }
@@ -40,9 +43,7 @@ pipeline {
                     def key = credentials('key')
 
                     // Copy files to the remote server
-                    sh '''
-                    scp -r -o StrictHostKeyChecking=no -i $key * ubuntu@18.60.83.32:/home/ubuntu/
-                    '''
+                    sh "scp -r -o StrictHostKeyChecking=no -i $key * ubuntu@18.60.83.32:/home/ubuntu/"
                     
                     // SSH into the remote server, install Docker, and run the container
                     sh '''
@@ -57,3 +58,4 @@ pipeline {
             }
         }
     }
+}
