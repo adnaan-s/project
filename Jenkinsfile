@@ -38,7 +38,7 @@ pipeline {
             steps {
                 script {
                     // Define your private key for SSH
-                    withCredentials([file(credentialsId: '0bfa3fd8-3b88-4863-b1d3-3e5d19bb6e05', variable: 'key')]) {
+                    withCredentials([file(credentialsId: 'ssh-key', variable: 'key')]) {
                         def key = sh(script: "cat \$key", returnStdout: true).trim()
 
                         // SSH into the remote server, install Docker, and run the container
