@@ -1,6 +1,6 @@
 pipeline {
     agent any
-
+    
     tools {
         nodejs 'nodejs'
     }
@@ -9,9 +9,9 @@ pipeline {
         stage('Checkout') {
             steps {
                 script {
-                    // Check out the code from the 'main' branch in GitHub
-                    checkout([$class: 'GitSCM', 
-                        branches: [[name: 'main']], 
+                    // Check out the code from the 'dev' branch in GitHub
+                    checkout([$class: 'GitSCM',
+                        branches: [[name: 'master']], 
                         userRemoteConfigs: [[url: 'https://github.com/adnaan-s/project.git']]
                     ])
                 }
@@ -22,24 +22,22 @@ pipeline {
             steps {
                 script {
                     // Run the build script
-                    sh 'docker build -t demo2 .'
+                    sh 'docker build -t demo .'
 
                     // Tag the image
-                    sh 'docker tag demo2:latest adnaansidd/prod:lts'
+                    sh 'docker tag demo:latest adnaansidd/prod:lts'
                     
                     // Push the image to the development Docker Hub repository
                     sh 'docker login -u adnaansidd -p 26122001As@'
-                    sh 'docker push adnaansidd/dev:lts'
-                    }
+                    sh 'docker push adnaansidd/prod:lts'
                 }
             }
         }
 
-        stage('Deploy') {
+        stage('deploy') {
             steps {
-                script {
-                    // Define your private key for SSH
-                    def key = credentials('key')
+                // Define your private key for SSH
+                    def key = credentials('0bfa3fd8-3b88-4863-b1d3-3e5d19bb6e05')
 
                     // Copy files to the remote server
                     sh "scp -r -o StrictHostKeyChecking=no -i $key * ubuntu@18.60.83.32:/home/ubuntu/"
@@ -53,7 +51,7 @@ pipeline {
                     sudo docker run -d -p 80:80 --name application adnaansidd/prod:lts
                     EOF
                     '''
-                }
             }
         }
     }
+}
