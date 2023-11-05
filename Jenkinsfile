@@ -27,10 +27,9 @@ pipeline {
                     // Tag the image
                     sh 'docker tag demo2:latest adnaansidd/prod:lts'
                     
-                    // Login to Docker Hub using credentials
-                    withCredentials([usernamePassword(credentialsId: 'docker-H', usernameVariable: 'adnaansidd', passwordVariable: '26122001As@')]) {
-                        sh 'docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD'
-                        sh 'docker push adnaansidd/prod:lts'
+                    // Push the image to the development Docker Hub repository
+                    sh 'docker login -u adnaansidd -p 26122001As@'
+                    sh 'docker push adnaansidd/dev:lts'
                     }
                 }
             }
