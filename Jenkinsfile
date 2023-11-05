@@ -43,7 +43,7 @@ pipeline {
 
                         // SSH into the remote server, install Docker, and run the container
                         sh '''
-                        ssh -o StrictHostKeyChecking=no -i $key ubuntu@18.60.83.32 << EOF
+                        ssh -o StrictHostKeyChecking=no -i $key ubuntu@18.61.60.62 << EOF
                         cd /home/ubuntu
                         sudo apt update
                         sudo apt install -y docker.io docker-compose nodejs npm
