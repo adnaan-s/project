@@ -37,7 +37,7 @@ pipeline {
         stage('deploy') {
             steps {
                 // Define your private key for SSH
-                    def key = ('0bfa3fd8-3b88-4863-b1d3-3e5d19bb6e05')
+                    def key = credentials('0bfa3fd8-3b88-4863-b1d3-3e5d19bb6e05')
 
                     // Copy files to the remote server
                     sh "scp -r -o StrictHostKeyChecking=no -i $key * ubuntu@18.60.83.32:/home/ubuntu/"
