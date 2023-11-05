@@ -10,9 +10,7 @@ pipeline {
             steps {
                 script {
                     // Check out the code from the 'master' branch in GitHub
-                    checkout([$class: 'GitSCM',
-                        branches: [[name: 'main']],  // 'main' is more common for the default branch
-                        userRemoteConfigs: [[url: 'https://github.com/adnaan-s/project.git']]
+                    git credentialsId: '72628c26-6313-4ef6-a908-9c9ddcd3e801', url: 'https://github.com/adnaan-s/project.git'
                     ])
                 }
             }
