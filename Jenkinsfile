@@ -36,20 +36,24 @@ pipeline {
 
         stage('deploy') {
             steps {
-                // Define your private key for SSH
-                withCredentials([file(credentialsId: '0bfa3fd8-3b88-4863-b1d3-3e5d19bb6e05', variable: 'key')]) {
+                script {
+                    // Define your private key for SSH
+                    withCredentials([file(credentialsId: '0bfa3fd8-3b88-4863-b1d3-3e5d19bb6e05', variable: 'key')]) {
                         def key = sh(script: "cat \$key", returnStdout: true).trim()
 
-                    // SSH into the remote server, install Docker, and run the container
-                    sh '''
-                    ssh -o StrictHostKeyChecking=no -i $key ubuntu@18.60.83.32 << EOF
-                    cd /home/ubuntu
-                    sudo apt update
-                    sudo apt install -y docker.io docker-compose nodejs npm
-                    sudo docker run -d -p 80:80 --name application adnaansidd/prod:lts
-                    EOF
-                    '''
+                        // SSH into the remote server, install Docker, and run the container
+                        sh '''
+                        ssh -o StrictHostKeyChecking=no -i $key ubuntu@18.60.83.32 << EOF
+                        cd /home/ubuntu
+                        sudo apt update
+                        sudo apt install -y docker.io docker-compose nodejs npm
+                        sudo docker run -d -p 80:80 --name application adnaansidd/prod:lts
+                        EOF
+                        '''
+                    }
+                }
             }
         }
     }
 }
+
